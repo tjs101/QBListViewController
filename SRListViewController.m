@@ -71,6 +71,8 @@
     
     ADD_BACK(back);
     
+    _nullCellHeight = CGRectGetHeight(self.view.frame);
+    
     self.items = [NSMutableArray array];
     
     [self triggerPullToRefresh];
@@ -326,7 +328,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self nullData]) {
-        return CGRectGetHeight(self.view.frame);
+        return _nullCellHeight;
     }
     
     if ([self isLoadMoreViewNeeded] && indexPath.row >= [self.items count]) {
