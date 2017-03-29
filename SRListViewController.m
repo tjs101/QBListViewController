@@ -72,6 +72,7 @@
     ADD_BACK(back);
     
     _nullCellHeight = CGRectGetHeight(self.view.frame);
+    _nullDataDesc = @"没有任何数据";
     
     self.items = [NSMutableArray array];
     
@@ -254,21 +255,33 @@
     if ([self nullData]) {
         static NSString *reuseIdentifier = @"no data cell";
         
-        QBTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        static NSInteger titleTag = 100;
         if (cell == nil) {
-            cell = [[QBTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+            cell = [[SRTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
             
             cell.backgroundColor = kBackgroundColor;
             
             UILabel *titleLabel = [[UILabel alloc] init];
             titleLabel.textColor = colorFromRGB(0x767676);
-            titleLabel.text = _nullDataDesc ? : @"没有任何数据";
             titleLabel.font = [UIFont systemFontOfSize:13];
+            titleLabel.text = _nullDataDesc;
             titleLabel.textAlignment = NSTextAlignmentCenter;
             [titleLabel sizeToFit];
-            titleLabel.frame = CGRectMake((CGRectGetWidth(self.view.frame) - CGRectGetWidth(titleLabel.frame)) / 2, (CGRectGetHeight(self.view.frame) - CGRectGetHeight(titleLabel.frame)) / 2 - 50, CGRectGetWidth(titleLabel.frame), CGRectGetHeight(titleLabel.frame));
+            titleLabel.tag = titleTag;
+            titleLabel.frame = CGRectMake((CGRectGetWidth(self.view.frame) - CGRectGetWidth(titleLabel.frame)) / 2, (_nullCellHeight - CGRectGetHeight(titleLabel.frame)) / 2 - 50, CGRectGetWidth(titleLabel.frame), CGRectGetHeight(titleLabel.frame));
             [cell addSubview:titleLabel];
             
+        }
+        
+        id value = [cell viewWithTag:titleTag];
+        if ([value isKindOfClass:[UILabel class]]) {
+            
+            UILabel *titleLabel = (UILabel *)value;
+            titleLabel.text = _nullDataDesc;
+            
+            CGRect rect = titleLabel.frame;
+            rect.origin.y = (_nullCellHeight - CGRectGetHeight(titleLabel.frame)) / 2 - 50;
+            titleLabel.frame = rect;
         }
         
         return cell;
